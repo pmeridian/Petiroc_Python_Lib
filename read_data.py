@@ -59,14 +59,14 @@ try:
                 in_sync+=1
             elif (in_sync==5):
                 if(int(data)!=7):
-                    print('\nCorrupted data')
-                    break
+                    print('\nCorrupted data. Skipping event')
+                    in_sync==0
                 in_sync+=1
 
             if (data==0x08000000):
             #    print("BOE")
                 in_sync=1
-            if (data==0x08000001):
+            if (data==0x08000001 and in_sync==6):
                 #print(event)
                 evt.evt_number=event['evt_number']
                 evt.evt_time=event['evt_time']
