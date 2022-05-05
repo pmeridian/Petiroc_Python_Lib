@@ -116,6 +116,7 @@ err=REG_tr_en_SET(0, handle)
 
 out_raw.close()
 
+#HV OFF
 SetHV_A7585D(0,target_voltage,handle)
 while abs(voltage) > 20:
 	[err, enable, voltage, current] = GetHV_A7585D(handle)
