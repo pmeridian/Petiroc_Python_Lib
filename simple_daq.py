@@ -86,11 +86,11 @@ if (CPACK_CP_0_START(handle) == True):
 				[err,counts]=REG_dv_tot_GET(handle)
 
 				print("Event Id: %d(%d)/%d"%(ReadDataNumber/7,counts,N_Total_Events), end='\r',flush=True)
-			except Exception as e:
-				print("\nException: ",e)
-				print("Stop Run")
+			except KeyboardInterrupt:
+				#print("\nException: ",e)
+				print("\nStop Run")
 				err=REG_tr_en_SET(0, handle)
-
+				print("Closing file %s"%args.output)
 				out_raw.close()
 
 				SetHV_A7585D(0,target_voltage,handle)
@@ -99,7 +99,7 @@ if (CPACK_CP_0_START(handle) == True):
 					print("%d: %.2f V %.3f muA"%(enable, voltage, current*1e3))
 					time.sleep(1)
 				print("HV OFF")
-				exit(-1)
+				exit(0)
 
 			#plt.cla()
 			#plt.plot(Energy[0])

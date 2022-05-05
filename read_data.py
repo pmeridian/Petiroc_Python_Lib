@@ -11,8 +11,30 @@ event={
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('--input', default='raw_data.dat')
+parser.add_argument('--output', default='dataTree.root')
+
 args = parser.parse_args()
 
+import ROOT as R
+## A C/C++ structure is required, to allow memory based access
+R.gROOT.ProcessLine(
+"struct event_t {\
+   UInt_t          evt_number;\
+   Float_t          evt_time;\
+   UInt_t          e16;\
+};" );
+
+evt=R.event_t()
+
+
+fOut=R.TFile(args.output,"RECREATE")
+t=R.TTree('dataTree','PETIROC data')
+t.Branch('evt_number', R.addressof(evt,'evt_number')  ,'evt_number/I')
+t.Branch('evt_time',   R.addressof(evt,'evt_time')    ,'evt_time/F')
+t.Branch('e16',        R.addressof(evt,'e16')         ,'e16/I')
+
+print("Opening %s"%args.input)
+nevents=0
 try:
     with open(args.input, "rb") as f:
         while True:
@@ -37,7 +59,7 @@ try:
                 in_sync+=1
             elif (in_sync==5):
                 if(int(data)!=7):
-                    print('Corrupted data')
+                    print('\nCorrupted data')
                     break
                 in_sync+=1
 
@@ -45,8 +67,16 @@ try:
             #    print("BOE")
                 in_sync=1
             if (data==0x08000001):
-                print(event)
+                #print(event)
+                evt.evt_number=event['evt_number']
+                evt.evt_time=event['evt_time']
+                evt.e16=event['e16']
+                t.Fill()
+                nevents+=1
+                if (nevents%100==0):
+                    print("Reading event %d"%nevents,end='\r',flush=True)
                 in_sync=0
-
+    t.Print()
+    fOut.Write()
 except IOError:
-     print('Error While Opening the file!')
+     print('\nError While Opening the file!')
