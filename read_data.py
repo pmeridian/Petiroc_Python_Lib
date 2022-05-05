@@ -61,7 +61,8 @@ try:
                 if(int(data)!=7):
                     print('\nCorrupted data. Skipping event')
                     in_sync==0
-                in_sync+=1
+                else:
+                    in_sync+=1
 
             if (data==0x08000000):
             #    print("BOE")
