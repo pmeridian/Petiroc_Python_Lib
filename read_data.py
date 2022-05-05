@@ -59,7 +59,7 @@ try:
                 in_sync+=1
             elif (in_sync==5):
                 if(int(data)!=7):
-                    print('\nCorrupted data. Skipping event')
+                    print('Corrupted data. Skipping event')
                     in_sync==0
                 else:
                     in_sync+=1
@@ -74,7 +74,7 @@ try:
                 evt.e16=event['e16']
                 t.Fill()
                 nevents+=1
-                if (nevents%100==0):
+                if (nevents%1000==0):
                     print("Reading event %d"%nevents,end='\r',flush=True)
                 in_sync=0
     t.Print()
