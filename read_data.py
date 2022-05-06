@@ -64,7 +64,7 @@ try:
                 else:
                     in_sync+=1
 
-            if (data==0x08000000):
+            if (data==0x08000000 and in_sync==0):
             #    print("BOE")
                 in_sync=1
             if (data==0x08000001 and in_sync==6):

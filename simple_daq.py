@@ -10,6 +10,22 @@ parser.add_argument('--output', default='raw_data.dat')
 parser.add_argument('--nevents', type=int, default=1000)
 args = parser.parse_args()
 
+def stop_running():
+	#print("\nException: ",e)
+	print("Stop Run")
+	err=REG_tr_en_SET(0, handle)
+	print("Closing file %s"%args.output)
+	out_raw.close()
+
+	[err, enable, voltage, current] = GetHV_A7585D(handle)
+	SetHV_A7585D(0,0,handle)
+	while abs(voltage) > 20:
+		[err, enable, voltage, current] = GetHV_A7585D(handle)
+		print("%d: %.2f V %.3f muA"%(enable, voltage, current*1e3))
+		time.sleep(1)
+	print("HV OFF")
+	exit(0)
+
 [ListOfDevices, count] = ListDevices()
 if (count > 0):
 
@@ -57,7 +73,7 @@ if (counts>0):
 	exit(-1)
 if (CPACK_CP_0_RESET(handle) != 0):
 	print("Reset Error!")
-
+	exit(-1)
 
 #plt.ion()
 #plt.show()
@@ -87,20 +103,8 @@ if (CPACK_CP_0_START(handle) == True):
 
 				print("Event Id: %d(%d)/%d"%(ReadDataNumber/7,counts,N_Total_Events), end='\r',flush=True)
 			except KeyboardInterrupt:
-				#print("\nException: ",e)
-				print("\nStop Run")
-				err=REG_tr_en_SET(0, handle)
-				print("Closing file %s"%args.output)
-				out_raw.close()
-
-				SetHV_A7585D(0,target_voltage,handle)
-				while abs(voltage) > 20:
-					[err, enable, voltage, current] = GetHV_A7585D(handle)
-					print("%d: %.2f V %.3f muA"%(enable, voltage, current*1e3))
-					time.sleep(1)
-				print("HV OFF")
-				exit(0)
-
+				print("")
+				stop_running()
 			#plt.cla()
 			#plt.plot(Energy[0])
 			#plt.pause(0.01)
@@ -111,16 +115,4 @@ else:
 	print("Start Error")
 	exit(-1)
 
-print("Stop Run")
-err=REG_tr_en_SET(0, handle)
-
-out_raw.close()
-
-#HV OFF
-SetHV_A7585D(0,target_voltage,handle)
-while abs(voltage) > 20:
-	[err, enable, voltage, current] = GetHV_A7585D(handle)
-	print("%d: %.2f V %.3f muA"%(enable, voltage, current*1e3))
-	time.sleep(1)
-print("HV OFF")
-exit(-1)
+stop_running()
