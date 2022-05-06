@@ -8,6 +8,7 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('--output', default='raw_data.dat')
 parser.add_argument('--nevents', type=int, default=1000)
+parser.add_argument('--hv', type=float, default=57)
 args = parser.parse_args()
 
 def stop_running():
@@ -47,7 +48,7 @@ time.sleep(1)
 ## CODE EXAMPLE FOR HV CONTROLLER                       ##
 SetIICControllerBaseAddress(Digital_RegisterFile.SCI_REG_i2chv_CTRL, Digital_RegisterFile.SCI_REG_i2chv_MON, handle)
 voltage=0
-target_voltage=57
+target_voltage=args.hv
 SetHV_A7585D(1,target_voltage,handle)
 while abs(voltage-target_voltage) > 0.2:
 	[err, enable, voltage, current] = GetHV_A7585D(handle)
