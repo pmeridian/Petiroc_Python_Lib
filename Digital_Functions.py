@@ -1,13 +1,3 @@
-
-
-
-
-
-
-
-
-
-
 import Digital_RegisterFile
 from ctypes import *
 import array
@@ -211,7 +201,21 @@ def REG_dv_tot_SET(data, handle):
     err = __abstracted_reg_write(data, Digital_RegisterFile.SCI_REG_dv_tot, handle)
     return err
 
+def REG_rej_delay_GET(handle):
+    [err, data] = __abstracted_reg_read(Digital_RegisterFile.SCI_REG_rej_delay, handle)
+    return err, data
 
+def REG_rej_delay_SET(data, handle):
+    err = __abstracted_reg_write(data, Digital_RegisterFile.SCI_REG_rej_delay, handle)
+    return err
+
+def REG_rej_en_GET(handle):
+    [err, data] = __abstracted_reg_read(Digital_RegisterFile.SCI_REG_rej_en, handle)
+    return err, data
+
+def REG_rej_en_SET(data, handle):
+    err = __abstracted_reg_write(data, Digital_RegisterFile.SCI_REG_rej_en, handle)
+    return err
 
 
 def CPACK_CP_0_RESET(handle):
